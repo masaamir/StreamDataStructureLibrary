@@ -1,16 +1,12 @@
-package ds.src
-
 import java.util.Date
-import ds.src.HyperLogLog
 import scala.util.control.Breaks._
 import scala.collection.mutable.ArrayBuffer
-import ds.util.BucketAndHash
-import ds.util.HyperLogLogUtil
-
+import ds.src.HyperLogLog
+import ds.util._
 /**
  * @author Rohit
  */
-class ModifiedHLL(number_of_buck: Int, window: Long) {
+class ModifiedHLL(number_of_buck: Int) {
   var buckets: Array[ArrayBuffer[(Byte, Long)]] = new Array(number_of_buck)
   private var currentsum = number_of_buck.toDouble
   private var nonZeroBuckets = 0
@@ -27,7 +23,7 @@ class ModifiedHLL(number_of_buck: Int, window: Long) {
     updateBucket(bucket, lowestBitPosition, time)
 
   }
-  def union(newbuckets: Array[ArrayBuffer[(Byte, Long)]], time: Long): Unit = {
+  def union(newbuckets: Array[ArrayBuffer[(Byte, Long)]], time: Long, window: Double): Unit = {
     var temp: ArrayBuffer[(Byte, Long)] = null
     for (i <- 0 to newbuckets.length - 1) {
       if (!(newbuckets(i) == null || newbuckets.length == 0)) {
@@ -136,7 +132,7 @@ class ModifiedHLL(number_of_buck: Int, window: Long) {
     }
 
   }
-  def estimate(): Long = {
+  def estimate(): Double = {
     val alpha = HyperLogLogUtil.computeAlpha(buckets.length);
     var result = alpha * buckets.length * buckets.length / getcurrentSum;
 
@@ -148,7 +144,7 @@ class ModifiedHLL(number_of_buck: Int, window: Long) {
       }
     }
 
-    return Math.round(result);
+    return result;
   }
 
   private def getcurrentSum(): Double = {
