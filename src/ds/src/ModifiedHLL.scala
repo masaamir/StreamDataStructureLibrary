@@ -184,5 +184,32 @@ class ModifiedHLL(number_of_buck: Int) {
     new HyperLogLog(buck)
 
   }
+  def convertToHLL(time: Long, window: Long): HyperLogLog = {
+
+    var list: ArrayBuffer[(Byte, Long)] = null
+    var buck: Array[Int] = new Array(number_of_buck)
+    var max = 0
+    for (i <- 0 to buckets.length - 1) {
+      max = 0
+      list = buckets(i)
+      if (list == null || list.length == 0) {
+        buck(i) = 0
+      } else {
+        for (x <- list) {
+          if (x._2 - time < window) {
+            if (max < x._1) {
+              max = x._1
+            }
+          }
+        }
+        buck(i) = max
+
+      }
+
+    }
+
+    new HyperLogLog(buck)
+
+  }
 
 }
