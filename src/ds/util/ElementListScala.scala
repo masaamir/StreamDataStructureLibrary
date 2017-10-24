@@ -1,7 +1,7 @@
 package ds.util
 import scala.util.control.Breaks._
 /**
- * @author Rohit
+ * @author
  */
 class ElementListScala extends Serializable {
 
